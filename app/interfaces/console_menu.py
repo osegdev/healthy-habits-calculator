@@ -5,4 +5,6 @@ def show_menu():
     print("3. Ver historial")
     print("4. Salir")
     print("5. Exportar historial a CSV y crear backup")
+    print("6. Ver resumen semanal")
+    print("7. Ver gráfico semanal (ASCII)")
     return input("Seleccione una opción: ")

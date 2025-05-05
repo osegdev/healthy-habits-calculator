@@ -14,6 +14,8 @@ from app.services.storage import (
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
 from app.services.statistics import calculate_progress
+from app.services.statistics import weekly_summary
+from app.services.statistics import plot_weekly_ascii
 
 habits = load_habits()
 records = load_records()
@@ -115,6 +117,12 @@ def handle_export_and_backup():
     backup_data()
     print("✅ Historial exportado y respaldo creado.")
 
+def handle_weekly_summary():
+    print(weekly_summary(records, habits))
+
+def handle_ascii_chart():
+    plot_weekly_ascii(records, habits)
+
 
 def main():
     print("🎯 Bienvenido a la Calculadora de Hábitos Saludables 🎯")
@@ -125,6 +133,8 @@ def main():
         "3": handle_view_history,
         "4": lambda: print("📦 Guardando datos... ¡Hasta luego!"),
         "5": handle_export_and_backup,
+        "6": handle_weekly_summary,
+        "7": handle_ascii_chart,
     }
 
     while True:
