@@ -1,12 +1,18 @@
 from datetime import date, datetime
 
 from app.interfaces.console_menu import show_menu
+from app.interfaces.command_router import execute_command
 from app.services.statistics import summarize_records
-from app.services.storage import (load_habits, load_records, save_habits,
-                                  save_records)
+from app.services.storage import (
+    load_habits,
+    load_records,
+    save_habits,
+    save_records,
+    export_records_to_csv,
+    backup_data,
+)
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
-from app.services.storage import export_records_to_csv, backup_data
 
 habits = load_habits()
 records = load_records()
@@ -21,8 +27,8 @@ def handle_create_habit():
     try:
         habit = create_habit(name, unit, goal, type_)
         habits.append(habit)
-        print(f"✅ Hábito '{habit.name}' registrado exitosamente.")
         save_habits(habits)
+        print(f"✅ Hábito '{habit.name}' registrado exitosamente.")
     except ValueError as e:
         print(f"❌ Error: {e}")
 
@@ -44,14 +50,17 @@ def handle_register_entry():
         value = float(input(f"Ingrese cantidad de '{habits[index].name}': "))
         date_str = input("Fecha (YYYY-MM-DD) [Enter para hoy]: ").strip()
         entry_date = (
-            datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else date.today()
+            datetime.strptime(date_str, "%Y-%m-%d").date()
+            if date_str
+            else date.today()
         )
         record = register_entry(habits[index].name, value, entry_date)
         records.append(record)
-        print(
-            f"✅ Entrada registrada para {record.habit_name} " f"el {record.record_date}"
-        )
         save_records(records)
+        print(
+            f"✅ Entrada registrada para {record.habit_name} "
+            f"el {record.record_date}"
+        )
     except ValueError as e:
         print(f"❌ Error: {e}")
 
@@ -67,6 +76,7 @@ def handle_view_history():
 
     print(summarize_records(records))
 
+
 def handle_export_and_backup():
     if not records:
         print("📭 No hay registros para exportar.")
@@ -77,22 +87,22 @@ def handle_export_and_backup():
 
 
 def main():
-    print("Bienvenido a la Calculadora de Hábitos Saludables")
+    print("🎯 Bienvenido a la Calculadora de Hábitos Saludables 🎯")
+
+    handlers = {
+        "1": handle_create_habit,
+        "2": handle_register_entry,
+        "3": handle_view_history,
+        "4": lambda: print("📦 Guardando datos... ¡Hasta luego!"),
+        "5": handle_export_and_backup,
+    }
+
     while True:
         choice = show_menu()
-        if choice == "1":
-            handle_create_habit()
-        elif choice == "2":
-            handle_register_entry()
-        elif choice == "3":
-            handle_view_history()
-        elif choice == "4":
-            print("👋 Saliendo del programa.")
+        if choice == "4":
+            handlers["4"]()
             break
-        elif choice == "5":
-            handle_export_and_backup()
-        else:
-            print("❌ Opción inválida. Intente de nuevo.")
+        execute_command(choice, handlers)
 
 
 if __name__ == "__main__":
