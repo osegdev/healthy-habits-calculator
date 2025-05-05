@@ -1,5 +1,5 @@
 from datetime import date, datetime
-
+from app.services.statistics import summarize_records
 from app.interfaces.console_menu import show_menu
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
@@ -39,19 +39,26 @@ def handle_register_entry():
         value = float(input(f"Ingrese cantidad de '{habits[index].name}': "))
         date_str = input("Fecha (YYYY-MM-DD) [Enter para hoy]: ").strip()
         entry_date = (
-            datetime.strptime(date_str, "%Y-%m-%d").date()
-            if date_str
-            else date.today()
+            datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else date.today()
         )
         record = register_entry(habits[index].name, value, entry_date)
         records.append(record)
         print(
-            f"✅ Entrada registrada para {record.habit_name} "
-            f"el {record.record_date}"
+            f"✅ Entrada registrada para {record.habit_name} " f"el {record.record_date}"
         )
     except ValueError as e:
         print(f"❌ Error: {e}")
 
+def handle_view_history():
+    print("\n📖 Historial de entradas")
+    if not records:
+        print("📭 No hay entradas registradas.")
+        return
+
+    for record in records:
+        print(f"- {record.record_date} | {record.habit_name}: {record.value}")
+
+    print(summarize_records(records))
 
 def main():
     print("Bienvenido a la Calculadora de Hábitos Saludables")
@@ -62,7 +69,7 @@ def main():
         elif choice == "2":
             handle_register_entry()
         elif choice == "3":
-            print("👉 Historial (en construcción)")
+            handle_view_history()
         elif choice == "4":
             print("👋 Saliendo del programa.")
             break
