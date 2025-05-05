@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Tomar Agua",
+    "unit": "litro",
+    "goal": 2.0,
+    "type_": "Agua"
+  }
+]

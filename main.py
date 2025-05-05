@@ -3,10 +3,13 @@ from app.services.statistics import summarize_records
 from app.interfaces.console_menu import show_menu
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
+from app.services.storage import (
+    load_habits, load_records,
+    save_habits, save_records
+)
 
-habits = []
-records = []
-
+habits = load_habits()
+records = load_records()
 
 def handle_create_habit():
     print("\n👉 Registrar nuevo hábito")
@@ -18,6 +21,7 @@ def handle_create_habit():
         habit = create_habit(name, unit, goal, type_)
         habits.append(habit)
         print(f"✅ Hábito '{habit.name}' registrado exitosamente.")
+        save_habits(habits)
     except ValueError as e:
         print(f"❌ Error: {e}")
 
@@ -46,6 +50,7 @@ def handle_register_entry():
         print(
             f"✅ Entrada registrada para {record.habit_name} " f"el {record.record_date}"
         )
+        save_records(records)
     except ValueError as e:
         print(f"❌ Error: {e}")
 
