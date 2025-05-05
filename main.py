@@ -66,15 +66,43 @@ def handle_register_entry():
 
 
 def handle_view_history():
-    print("\n📖 Historial de entradas")
+    print("\n📖 Ver historial")
+    print("1. Ver todo")
+    print("2. Filtrar por hábito")
+    print("3. Filtrar por fecha")
+    choice = input("Seleccione una opción: ")
+
     if not records:
-        print("📭 No hay entradas registradas.")
+        print("📭 No hay registros.")
         return
 
-    for record in records:
-        print(f"- {record.record_date} | {record.habit_name}: {record.value}")
+    filtered = records
 
-    print(summarize_records(records))
+    if choice == "2":
+        names = set([r.habit_name for r in records])
+        print("Hábitos disponibles:")
+        for name in names:
+            print(f"- {name}")
+        name = input("Ingrese el nombre exacto del hábito: ")
+        filtered = [r for r in records if r.habit_name == name]
+
+    elif choice == "3":
+        date_str = input("Ingrese la fecha (YYYY-MM-DD): ")
+        try:
+            target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            filtered = [r for r in records if r.record_date == target_date]
+        except ValueError:
+            print("❌ Fecha inválida")
+            return
+
+    if not filtered:
+        print("📭 No se encontraron registros.")
+        return
+
+    for r in filtered:
+        print(f"- {r.record_date} | {r.habit_name}: {r.value}")
+
+    print(summarize_records(filtered))
 
 
 def handle_export_and_backup():
