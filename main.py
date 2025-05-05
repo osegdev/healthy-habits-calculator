@@ -1,15 +1,16 @@
 from datetime import date, datetime
-from app.services.statistics import summarize_records
+
 from app.interfaces.console_menu import show_menu
+from app.services.statistics import summarize_records
+from app.services.storage import (load_habits, load_records, save_habits,
+                                  save_records)
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
-from app.services.storage import (
-    load_habits, load_records,
-    save_habits, save_records
-)
+from app.services.storage import export_records_to_csv, backup_data
 
 habits = load_habits()
 records = load_records()
+
 
 def handle_create_habit():
     print("\n👉 Registrar nuevo hábito")
@@ -54,6 +55,7 @@ def handle_register_entry():
     except ValueError as e:
         print(f"❌ Error: {e}")
 
+
 def handle_view_history():
     print("\n📖 Historial de entradas")
     if not records:
@@ -64,6 +66,15 @@ def handle_view_history():
         print(f"- {record.record_date} | {record.habit_name}: {record.value}")
 
     print(summarize_records(records))
+
+def handle_export_and_backup():
+    if not records:
+        print("📭 No hay registros para exportar.")
+        return
+    export_records_to_csv(records)
+    backup_data()
+    print("✅ Historial exportado y respaldo creado.")
+
 
 def main():
     print("Bienvenido a la Calculadora de Hábitos Saludables")
@@ -78,6 +89,8 @@ def main():
         elif choice == "4":
             print("👋 Saliendo del programa.")
             break
+        elif choice == "5":
+            handle_export_and_backup()
         else:
             print("❌ Opción inválida. Intente de nuevo.")
 
