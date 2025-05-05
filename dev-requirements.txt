@@ -24,8 +24,12 @@ iniconfig==2.1.0
     # via pytest
 isort==6.0.1
     # via -r dev-requirements.in
+markdown-it-py==3.0.0
+    # via rich
 mccabe==0.7.0
     # via flake8
+mdurl==0.1.2
+    # via markdown-it-py
 mypy==1.15.0
     # via -r dev-requirements.in
 mypy-extensions==1.1.0
@@ -52,6 +56,8 @@ pycodestyle==2.13.0
     # via flake8
 pyflakes==3.3.2
     # via flake8
+pygments==2.19.1
+    # via rich
 pytest==8.3.5
     # via
     #   -r dev-requirements.in
@@ -60,6 +66,8 @@ pytest-cov==6.1.1
     # via -r dev-requirements.in
 pyyaml==6.0.2
     # via pre-commit
+rich==14.0.0
+    # via -r dev-requirements.in
 typing-extensions==4.13.2
     # via mypy
 virtualenv==20.30.0
