@@ -13,6 +13,7 @@ from app.services.storage import (
 )
 from app.use_cases.create_habit import create_habit
 from app.use_cases.register_entry import register_entry
+from app.services.statistics import calculate_progress
 
 habits = load_habits()
 records = load_records()
@@ -100,7 +101,8 @@ def handle_view_history():
         return
 
     for r in filtered:
-        print(f"- {r.record_date} | {r.habit_name}: {r.value}")
+        progreso = calculate_progress(r, habits)
+        print(f"- {r.record_date} | {r.habit_name}: {r.value} → {progreso}")
 
     print(summarize_records(filtered))
 
